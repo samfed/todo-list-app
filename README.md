@@ -71,3 +71,6 @@ A dropdown menu to filter tasks by status, including options for:
 ## Clear Completed Tasks Button
 
 A button to clear all completed tasks from the list.
+
+![alt text](./ux.png?raw=true "title")
+![plot](./ux.png?raw=true)
