@@ -1,46 +1,73 @@
-# Getting Started with Create React App
+# Project Acceptance Criteria
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project aims to create a task management application with the following features and functionalities:
 
-## Available Scripts
+## Task Management Functionality:
 
-In the project directory, you can run:
+- Users should be able to create new tasks.
+- Users should be able to view a list of all tasks.
+- Users should be able to update existing tasks.
+- Users should be able to delete tasks.
 
-### `npm start`
+## Task Status Functionality:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Users should be able to mark tasks as completed or incomplete.
+- Users should be able to filter tasks by status (completed/incomplete).
+- Users should be able to clear all completed tasks with a single action.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Appearance and User Interface:
 
-### `npm test`
+- The application should have a dark mode toggle switch for improved readability in low-light environments.
+- The user interface should be intuitive and user-friendly, allowing users to easily navigate through different sections and perform actions.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Local Storage Integration:
 
-### `npm run build`
+- Tasks and their status (completed/incomplete) should be stored locally using browser's local storage feature to persist data across sessions.
+- Tasks should remain intact even after the user refreshes or closes the browser window.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Performance and Reliability:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- The application should be responsive and performant, ensuring smooth user experience even with a large number of tasks.
+- The application should handle errors gracefully and provide clear feedback to users in case of any issues.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Compatibility and Testing:
 
-### `npm run eject`
+- The application should be compatible with major web browsers (Chrome, Firefox, Safari, Edge, etc.).
+- The application should be thoroughly tested to ensure functionality across different devices and screen sizes, including desktops, tablets, and mobile phones.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Documentation and Support:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Provide clear documentation on how to use the application, including instructions on creating, updating, deleting, and managing tasks.
+- Offer support channels (e.g., email, chat support) for users to reach out in case of questions or issues.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+# Task Management Application UI
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+This project aims to create a task management application with the following UI elements:
 
-## Learn More
+## Dark Mode Toggle
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+A toggle switch to enable or disable dark mode for improved readability in low-light environments.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Task List
+
+A list displaying all tasks, each with the following options:
+
+- Checkbox to mark the task as completed or incomplete
+- Edit button to update the task
+- Delete button to remove the task
+
+## Add Task Button
+
+A button to add new tasks to the list.
+
+## Filter by Status
+
+A dropdown menu to filter tasks by status, including options for:
+
+- All tasks
+- Completed tasks
+- Incomplete tasks
+
+## Clear Completed Tasks Button
+
+A button to clear all completed tasks from the list.
