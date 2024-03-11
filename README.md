@@ -72,5 +72,6 @@ A dropdown menu to filter tasks by status, including options for:
 
 A button to clear all completed tasks from the list.
 
-![alt text](./ux.png?raw=true "title")
+## It will look something like this
+
 ![plot](./ux.png?raw=true)
