@@ -1,61 +1,93 @@
 import "./App.css";
-import { TodoList } from "./components/TodoList/TodoList";
-import { AddNewTodoItem } from "./components/AddNewTodoItem/AddNewTodoItem";
+import { TaskList } from "./components/TaskList/TaskList";
+import { AddNewTask } from "./components/AddNewTask/AddNewTask";
 import AppContext from "./context/appcontext";
-import { todoItemType } from "./types/todoitem";
+import { todoTaskType } from "./types/todoitem";
 import { useEffect, useState } from "react";
 
 function App() {
-  const [appData, setAppData] = useState<todoItemType[]>([]);
-  const [duplicateTasks, setDuplicateTasks] = useState<todoItemType[]>([]);
+  const [appData, setAppData] = useState<todoTaskType[]>([]);
+  const [duplicateTasks, setDuplicateTasks] = useState<todoTaskType[]>([]);
 
   useEffect(() => {
-    if (localStorage.getItem("todoList") === null) {
-      localStorage.setItem("todoList", JSON.stringify([]));
+    if (localStorage.getItem("taskList") === null) {
+      localStorage.setItem("taskList", JSON.stringify([]));
     } else {
-      const todoList = JSON.parse(localStorage.getItem("todoList") || "[]");
-      setAppData(todoList);
+      const taskList = JSON.parse(localStorage.getItem("taskList") || "[]");
+      setAppData(taskList);
     }
   }, []);
 
-  const handleAddClick = (newItem: todoItemType) => {
-    const todoList = JSON.parse(localStorage.getItem("todoList") || "[]");
+  const handleAddClick = (newTask: todoTaskType) => {
+    const taskList = JSON.parse(localStorage.getItem("taskList") || "[]");
 
-    const sameItemsAlreadyExisting = todoList.filter((item: todoItemType) => {
-      return item.key === newItem.key;
+    const sameItemsAlreadyExisting = taskList.filter((task: todoTaskType) => {
+      return task.key.split("_")[0] === newTask.key;
     });
 
     if (sameItemsAlreadyExisting.length > 0) {
-      setDuplicateTasks([newItem, ...sameItemsAlreadyExisting]);
+      setDuplicateTasks([newTask, ...sameItemsAlreadyExisting]);
     } else {
-      addItem(newItem);
+      addTask(newTask);
     }
   };
 
-  const addItem = (item: todoItemType) => {
-    const todoList = JSON.parse(localStorage.getItem("todoList") || "[]");
-    const modifiedData = [item, ...todoList];
-    localStorage.setItem("todoList", JSON.stringify(modifiedData));
+  const addTask = (task: todoTaskType) => {
+    const taskList = JSON.parse(localStorage.getItem("taskList") || "[]");
+    const modifiedData = [task, ...taskList];
+    localStorage.setItem("taskList", JSON.stringify(modifiedData));
     setAppData(modifiedData);
   };
 
-  const handleDuplicateItem = <T extends todoItemType | null>(item: T) => {
-    if (item !== null) {
-      addItem(item);
+  const handleDuplicateTask = <T extends boolean>(task: T) => {
+    if (task) {
+      const _task = {
+        ...duplicateTasks[0],
+        key: `${duplicateTasks[0].title}_${duplicateTasks.length}`,
+      };
+      addTask(_task);
     }
     setDuplicateTasks([]);
+  };
+
+  const handleEditTask = (task: todoTaskType) => {
+    const taskList = JSON.parse(localStorage.getItem("taskList") || "[]");
+    const newTaskList = taskList.map((t: todoTaskType) => {
+      if (t.key === task.key) {
+        return {
+          ...t,
+          title: task.title,
+        };
+      } else {
+        return t;
+      }
+    });
+    localStorage.setItem("taskList", JSON.stringify(newTaskList));
+    setAppData(newTaskList);
+  };
+
+  const handleDeleteTask = (task: todoTaskType) => {
+    const taskList = JSON.parse(localStorage.getItem("taskList") || "[]");
+    const newTaskList = taskList.filter((t: todoTaskType) => {
+      return t.key !== task.key;
+    });
+    localStorage.setItem("taskList", JSON.stringify(newTaskList));
+    setAppData(newTaskList);
   };
 
   return (
     <div className="app-container">
       <div className="app-title">TODO LIST</div>
       <AppContext.Provider value={appData}>
-        <AddNewTodoItem
+        <AddNewTask
           handleAddClick={handleAddClick}
           duplicateTasks={duplicateTasks}
-          handleDuplicateItem={handleDuplicateItem}
+          handleDuplicateTask={handleDuplicateTask}
         />
-        <TodoList />
+        <TaskList
+          handleEditTask={handleEditTask}
+          handleDeleteTask={handleDeleteTask}
+        />
       </AppContext.Provider>
     </div>
   );

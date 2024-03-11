@@ -1,17 +1,17 @@
 import { Card, Input, Button, Modal } from "antd";
 import { useState } from "react";
-import { todoItemType } from "../../types/todoitem";
+import { todoTaskType } from "../../types/todoitem";
 
 type componentProp = {
-  handleAddClick: (newItem: todoItemType) => void;
-  duplicateTasks: todoItemType[];
-  handleDuplicateItem: <T extends todoItemType | null>(item: T) => void;
+  handleAddClick: (newTask: todoTaskType) => void;
+  duplicateTasks: todoTaskType[];
+  handleDuplicateTask: <T extends boolean>(task: T) => void;
 };
 
-export const AddNewTodoItem = ({
+export const AddNewTask = ({
   handleAddClick,
   duplicateTasks,
-  handleDuplicateItem,
+  handleDuplicateTask,
 }: componentProp) => {
   const [textInput, setTextInput] = useState("");
   return (
@@ -28,10 +28,10 @@ export const AddNewTodoItem = ({
           title="Task Already Exists"
           open={true}
           onOk={() => {
-            handleDuplicateItem(duplicateTasks[0]);
+            handleDuplicateTask(true);
           }}
           onCancel={() => {
-            handleDuplicateItem(null);
+            handleDuplicateTask(false);
           }}
         >
           {duplicateTasks.length - 1 > 1 ? (
@@ -44,7 +44,7 @@ export const AddNewTodoItem = ({
       ) : (
         <Button
           danger
-          className="add-new-item-button"
+          className="add-new-task-button"
           type="primary"
           onClick={() => {
             if (textInput.length > 0) {
