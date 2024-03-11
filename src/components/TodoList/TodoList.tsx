@@ -15,16 +15,28 @@ export const TodoList = () => {
       dataIndex: "description",
       key: "description",
     },
-    // {
-    //   title: "Action",
-    //   key: "action",
-    //   render: (_: any, record: { title: string }) => (
-    //     <Space size="middle">
-    //       <a>Edit</a>
-    //       <a>Done</a>
-    //     </Space>
-    //   ),
-    // },
+    {
+      title: "Action",
+      key: "action",
+      render: (record: { title: string }) => (
+        <Space size="middle">
+          <a
+            onClick={() => {
+              console.log(record, "edit button clicked");
+            }}
+          >
+            Edit
+          </a>
+          <a
+            onClick={() => {
+              console.log(record, "delete button clicked");
+            }}
+          >
+            Delete
+          </a>
+        </Space>
+      ),
+    },
   ];
 
   return (

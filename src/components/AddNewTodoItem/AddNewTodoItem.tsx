@@ -1,12 +1,18 @@
-import { Card, Input, Button } from "antd";
+import { Card, Input, Button, Modal } from "antd";
 import { useState } from "react";
 import { todoItemType } from "../../types/todoitem";
 
 type componentProp = {
-  addNewItem: (newItem: todoItemType) => void;
+  handleAddClick: (newItem: todoItemType) => void;
+  duplicateTasks: todoItemType[];
+  handleDuplicateItem: <T extends todoItemType | null>(item: T) => void;
 };
 
-export const AddNewTodoItem = ({ addNewItem }: componentProp) => {
+export const AddNewTodoItem = ({
+  handleAddClick,
+  duplicateTasks,
+  handleDuplicateItem,
+}: componentProp) => {
   const [textInput, setTextInput] = useState("");
   return (
     <Card className="add-new-todo-container" bordered={true}>
@@ -17,23 +23,43 @@ export const AddNewTodoItem = ({ addNewItem }: componentProp) => {
           setTextInput(e.target.value);
         }}
       />
-      <Button
-        danger
-        className="add-new-item-button"
-        type="primary"
-        onClick={() => {
-          if (textInput.length > 0) {
-            addNewItem({
-              key: textInput,
-              title: textInput,
-              description: "",
-            });
-            setTextInput("");
-          }
-        }}
-      >
-        Add
-      </Button>
+      {duplicateTasks.length > 1 ? (
+        <Modal
+          title="Task Already Exists"
+          open={true}
+          onOk={() => {
+            handleDuplicateItem(duplicateTasks[0]);
+          }}
+          onCancel={() => {
+            handleDuplicateItem(null);
+          }}
+        >
+          {duplicateTasks.length - 1 > 1 ? (
+            <p>{`${duplicateTasks.length - 1} similar tasks already exist.`}</p>
+          ) : (
+            <p>{`${duplicateTasks.length - 1} similar task already exists.`}</p>
+          )}
+          <p>Do you still want to add it ?</p>
+        </Modal>
+      ) : (
+        <Button
+          danger
+          className="add-new-item-button"
+          type="primary"
+          onClick={() => {
+            if (textInput.length > 0) {
+              handleAddClick({
+                key: textInput.toLowerCase(),
+                title: textInput,
+                description: "",
+              });
+              setTextInput("");
+            }
+          }}
+        >
+          Add
+        </Button>
+      )}
     </Card>
   );
 };
