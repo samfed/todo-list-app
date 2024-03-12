@@ -1,13 +1,15 @@
 import "./App.css";
 import { TaskList } from "./components/TaskList/TaskList";
 import { AddNewTask } from "./components/AddNewTask/AddNewTask";
-import AppContext from "./context/appcontext";
 import { todoTaskType } from "./types/todoitem";
 import { useEffect, useState } from "react";
 
 function App() {
   const [appData, setAppData] = useState<todoTaskType[]>([]);
   const [duplicateTasks, setDuplicateTasks] = useState<todoTaskType[]>([]);
+  const [taskBeingEdited, setTaskBeingEdited] = useState<todoTaskType | null>(
+    null
+  );
 
   useEffect(() => {
     if (localStorage.getItem("taskList") === null) {
@@ -20,7 +22,6 @@ function App() {
 
   const handleAddClick = (newTask: todoTaskType) => {
     const taskList = JSON.parse(localStorage.getItem("taskList") || "[]");
-
     const sameItemsAlreadyExisting = taskList.filter((task: todoTaskType) => {
       return task.key.split("_")[0] === newTask.key;
     });
@@ -39,7 +40,45 @@ function App() {
     setAppData(modifiedData);
   };
 
-  const handleDuplicateTask = <T extends boolean>(task: T) => {
+  const handleDeleteClick = (task: todoTaskType) => {
+    const taskList = JSON.parse(localStorage.getItem("taskList") || "[]");
+    const newTaskList = taskList.filter((t: todoTaskType) => {
+      return t.key !== task.key;
+    });
+    localStorage.setItem("taskList", JSON.stringify(newTaskList));
+    setAppData(newTaskList);
+  };
+
+  const handleEditClick = (record: todoTaskType) => {
+    setTaskBeingEdited(record);
+  };
+
+  const editTask = (task: todoTaskType) => {
+    const taskList = JSON.parse(localStorage.getItem("taskList") || "[]");
+    const newTaskList = taskList.map((t: todoTaskType) => {
+      return t.key === task.key ? task : t;
+    });
+    localStorage.setItem("taskList", JSON.stringify(newTaskList));
+    setAppData(newTaskList);
+  };
+
+  const handleCancelClick = () => {
+    setTaskBeingEdited(null);
+  };
+
+  const handleSaveClick = (task: todoTaskType) => {
+    const title = taskBeingEdited ? taskBeingEdited.title : "";
+    const status = taskBeingEdited ? taskBeingEdited.status : "";
+    const updatedRecord = {
+      ...task,
+      title,
+      status,
+    };
+    editTask(updatedRecord);
+    setTaskBeingEdited(null);
+  };
+
+  const handleDuplicateTask = (task: boolean) => {
     if (task) {
       const _task = {
         ...duplicateTasks[0],
@@ -50,45 +89,23 @@ function App() {
     setDuplicateTasks([]);
   };
 
-  const handleEditTask = (task: todoTaskType) => {
-    const taskList = JSON.parse(localStorage.getItem("taskList") || "[]");
-    const newTaskList = taskList.map((t: todoTaskType) => {
-      if (t.key === task.key) {
-        return {
-          ...t,
-          title: task.title,
-        };
-      } else {
-        return t;
-      }
-    });
-    localStorage.setItem("taskList", JSON.stringify(newTaskList));
-    setAppData(newTaskList);
-  };
-
-  const handleDeleteTask = (task: todoTaskType) => {
-    const taskList = JSON.parse(localStorage.getItem("taskList") || "[]");
-    const newTaskList = taskList.filter((t: todoTaskType) => {
-      return t.key !== task.key;
-    });
-    localStorage.setItem("taskList", JSON.stringify(newTaskList));
-    setAppData(newTaskList);
-  };
-
   return (
     <div className="app-container">
       <div className="app-title">TODO LIST</div>
-      <AppContext.Provider value={appData}>
-        <AddNewTask
-          handleAddClick={handleAddClick}
-          duplicateTasks={duplicateTasks}
-          handleDuplicateTask={handleDuplicateTask}
-        />
-        <TaskList
-          handleEditTask={handleEditTask}
-          handleDeleteTask={handleDeleteTask}
-        />
-      </AppContext.Provider>
+      <AddNewTask
+        handleAddClick={handleAddClick}
+        duplicateTasks={duplicateTasks}
+        handleDuplicateTask={handleDuplicateTask}
+      />
+      <TaskList
+        appData={appData}
+        handleEditClick={handleEditClick}
+        handleDeleteClick={handleDeleteClick}
+        handleCancelClick={handleCancelClick}
+        handleSaveClick={handleSaveClick}
+        taskBeingEdited={taskBeingEdited}
+        setTaskBeingEdited={setTaskBeingEdited}
+      />
     </div>
   );
 }

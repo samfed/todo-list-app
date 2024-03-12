@@ -5,7 +5,7 @@ import { todoTaskType } from "../../types/todoitem";
 type componentProp = {
   handleAddClick: (newTask: todoTaskType) => void;
   duplicateTasks: todoTaskType[];
-  handleDuplicateTask: <T extends boolean>(task: T) => void;
+  handleDuplicateTask: (task: boolean) => void;
 };
 
 export const AddNewTask = ({
@@ -52,6 +52,7 @@ export const AddNewTask = ({
                 key: textInput.toLowerCase(),
                 title: textInput,
                 description: "",
+                status: "incomplete",
               });
               setTextInput("");
             }

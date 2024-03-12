@@ -1,93 +1,73 @@
-import { Card, Table, Space, Input, Button } from "antd";
-import { useContext, useState } from "react";
-import AppContext from "../../context/appcontext";
+import { Card, Table, Input } from "antd";
+import { useState } from "react";
 import { todoTaskType } from "../../types/todoitem";
+import { TaskStatus } from "../TaskStatus/TaskStatus";
+import { TaskActions } from "../TaskActions/TaskActions";
+import { TaskTitle } from "../TaskTitle/TaskTitle";
 
 type TaskListProps = {
-  handleEditTask: <T extends todoTaskType>(task: T) => void;
-  handleDeleteTask: <T extends todoTaskType>(task: T) => void;
+  handleDeleteClick: (task: todoTaskType) => void;
+  appData: todoTaskType[];
+  handleEditClick: (task: todoTaskType) => void;
+  taskBeingEdited: todoTaskType | null;
+  handleCancelClick: () => void;
+  handleSaveClick: (task: todoTaskType) => void;
+  setTaskBeingEdited: (task: todoTaskType) => void;
 };
 
 export const TaskList = ({
-  handleEditTask,
-  handleDeleteTask,
+  handleDeleteClick,
+  appData,
+  handleEditClick,
+  taskBeingEdited,
+  handleCancelClick,
+  handleSaveClick,
+  setTaskBeingEdited,
 }: TaskListProps) => {
-  const [editTask, setIsEditTask] = useState<{
-    key?: string;
-    title?: string;
-    description?: string;
-  }>({
-    key: "",
-    title: "",
-    description: "",
-  });
-  const [editValue, setEditValue] = useState("");
-
-  const data = useContext(AppContext);
   const columns = [
     {
       title: "Task",
       dataIndex: "title",
       key: "title",
       render: (title: string, record: todoTaskType) => {
-        if (editTask.key === record.key) {
-          return (
-            <div className="edit-task-wrapper">
-              <Input
-                value={editValue}
-                onChange={(e) => {
-                  setEditValue(e.target.value);
-                }}
-              />
-              <Button
-                type="primary"
-                onClick={() => {
-                  const updatedRecord = {
-                    ...record,
-                    title: editValue,
-                  };
-                  handleEditTask(updatedRecord);
-                  setIsEditTask({});
-                }}
-              >
-                Submit
-              </Button>
-            </div>
-          );
-        } else {
-          return <span>{title}</span>;
-        }
+        return (
+          <TaskTitle
+            record={record}
+            taskBeingEdited={taskBeingEdited}
+            setTaskBeingEdited={setTaskBeingEdited}
+          />
+        );
       },
     },
     {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string, record: todoTaskType) => {
+        return (
+          <TaskStatus
+            record={record}
+            taskBeingEdited={taskBeingEdited}
+            setTaskBeingEdited={setTaskBeingEdited}
+          />
+        );
+      },
     },
     {
       title: "Action",
       key: "action",
-      render: (record: todoTaskType) => (
-        <Space size="middle">
-          <a
-            onClick={() => {
-              setIsEditTask(record);
-              setEditValue(record.title);
-              console.log(record, "edit button clicked");
-            }}
-          >
-            Edit
-          </a>
-          <a
-            onClick={() => {
-              handleDeleteTask(record);
-              console.log(record, "delete button clicked");
-            }}
-          >
-            Delete
-          </a>
-        </Space>
-      ),
+      render: (record: todoTaskType) => {
+        return (
+          <TaskActions
+            record={record}
+            taskBeingEdited={taskBeingEdited}
+            handleDeleteClick={handleDeleteClick}
+            handleEditClick={handleEditClick}
+            handleCancelClick={handleCancelClick}
+            handleSaveClick={handleSaveClick}
+          />
+        );
+      },
     },
   ];
 
@@ -95,7 +75,7 @@ export const TaskList = ({
     <Card bordered={true} className="todo-list-container">
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={appData}
         pagination={{ position: ["bottomCenter"] }}
       />
     </Card>
